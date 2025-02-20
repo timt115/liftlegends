@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Button, Alert } from 'react-native';
+import { StyleSheet, View, TextInput, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { Button, Icon } from '@ui-kitten/components';
+
+const FacebookIcon = (props) => (
+  <Icon name='facebook' {...props} />
+);
+
+export const LoginButton = () => (
+  <Button accessoryLeft={FacebookIcon}>Login with Facebook</Button>
+);
 
 export default function LoginScreen() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -36,6 +45,8 @@ export default function LoginScreen() {
         secureTextEntry
       />
       <Button title="Login" onPress={handleLogin} color={Colors[colorScheme].button} />
+      <View style={styles.buttonSpacing} />
+      <LoginButton />
     </ThemedView>
   );
 }
@@ -51,6 +62,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 24,
+    color: 'white',
   },
   input: {
     height: 40,
@@ -58,5 +70,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 8,
     marginBottom: 16,
+  },
+  buttonSpacing: {
+    height: 16, // Adjust the height to add space between the buttons
   },
 });

@@ -1,39 +1,30 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import React from 'react';
+import * as eva from '@eva-design/eva';
+import { ApplicationProvider, IconRegistry, Layout, Text, useTheme } from '@ui-kitten/components';
+import { Link, Slot } from 'expo-router';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { myTheme as theme } from './custom-theme'; // <-- Import app theme
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+const HomeScreen = () => {
+  const theme = useTheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme['color-primary-500'] }}>
+      <Text category='h1' style={{ color: theme['color-primary-100'] }}>Welcome</Text>
+      <Text category='s1' style={{ color: theme['color-primary-100'] }}>To</Text>
+      <Text category='h1' style={{ color: theme['color-primary-100'] }}>Lift Legends</Text>
+      <Link href="/(tabs)/profile" style={{ color: theme['color-primary-100'] }}>Go to Tabs</Link>
+    </Layout>
   );
-}
+};
+
+export default () => (
+  <>
+    <IconRegistry icons={EvaIconsPack} />
+    <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
+      <Layout style={{ flex: 1, backgroundColor: theme['color-primary-500'] }}>
+        <Slot />
+      </Layout>
+    </ApplicationProvider>
+  </>
+);
