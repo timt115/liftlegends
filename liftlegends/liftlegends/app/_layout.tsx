@@ -5,6 +5,7 @@ import { Link, Slot } from 'expo-router';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { myTheme as theme } from './custom-theme'; // <-- Import app theme
 
+
 const HomeScreen = () => {
   const theme = useTheme();
 
