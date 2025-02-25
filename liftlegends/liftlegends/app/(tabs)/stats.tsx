@@ -7,96 +7,101 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useProgress } from '@/hooks/useProgress';
 import { myTheme as customTheme } from '../custom-theme'; // <-- Import app theme
 
-export const ProgressBarTheming = (): React.ReactElement => {
+export const ProgressBarStat = (): React.ReactElement => {
   const progress = useProgress();
   return (
-    <ProgressBar style={styles.progressBar} progress={progress} />
+    <ProgressBar style={styles.progressBar} progress={progress} size='small' />
   );
 };
+
+
+
 
 export default function StatsTab() {
   const theme = useTheme();
 
   return (
-    <ThemedView style={[styles.container, { backgroundColor: theme['color-primary-500'] }]}>
-      <ThemedView style={[styles.titleContainer, { backgroundColor: theme['color-primary-400'] }]}>
-        <ThemedText type="title" style={styles.title}>Stats</ThemedText>
+    <ThemedView style={[styles.container, { backgroundColor: theme['color-basic-100'] }]}>
+      <ThemedView style={[styles.titleContainer, { backgroundColor: theme['color-primary-500'] }]}>
+      <ThemedText type="title" style={[styles.title, { color: theme['color-basic-100'] }]}>Stats</ThemedText>
       </ThemedView>
-      <ThemedView style={[styles.statContainer, { backgroundColor: theme['color-primary-400'] }]}>
-        <View style={styles.statItem}>
-          <View style={styles.statName}>
-            <IconSymbol name="chest" size={24} color={theme['color-primary-100']} />
-            <ThemedText style={styles.statText}>Chest</ThemedText>
-          </View>
-          <View style={styles.statDetails}>
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-            <ProgressBarTheming />
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-          </View>
+      <ThemedView style={[styles.overallCard, { backgroundColor: theme['color-primary-500'] }]}>
+        <ThemedText style={[styles.cardTitle, { color: theme['color-basic-100'] }]}>Overview</ThemedText>
+        <View style={styles.overallContent}>
+        <ThemedText style={[styles.overallText, { color: theme['color-basic-100'] }]}>RANK</ThemedText>
+        <ProgressBarStat />
+        <ThemedText style={[styles.overallText, { color: theme['color-basic-100'] }]}>RANK</ThemedText>
         </View>
-        <View style={styles.statItem}>
-          <View style={styles.statName}>
-            <IconSymbol name="back" size={24} color={theme['color-primary-100']} />
-            <ThemedText style={styles.statText}>Back</ThemedText>
-          </View>
-          <View style={styles.statDetails}>
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-            <ProgressBarTheming />
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-          </View>
+      </ThemedView>
+      <View style={{ height: 30 }} />
+      <ThemedView style={[styles.statContainer, { backgroundColor: theme['color-primary-500'] }]}>
+        <ThemedText style={[styles.cardTitle, { color: theme['color-primary-0'] }]}>Muscle Groups</ThemedText>
+      <View style={styles.statItem}>
+        <View style={styles.statName}>
+        <IconSymbol name="chest" size={24} color={theme['color-primary-500']} />
+        <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Chest</ThemedText>
         </View>
-        <View style={styles.statItem}>
-          <View style={styles.statName}>
-            <IconSymbol name="biceps" size={24} color={theme['color-primary-100']} />
-            <ThemedText style={styles.statText}>Biceps</ThemedText>
-          </View>
-          <View style={styles.statDetails}>
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-            <ProgressBarTheming />
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-          </View>
+        <View style={styles.statDetails}>
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
+        <ProgressBarStat />
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
         </View>
-        <View style={styles.statItem}>
-          <View style={styles.statName}>
-            <IconSymbol name="triceps" size={24} color={theme['color-primary-100']} />
-            <ThemedText style={styles.statText}>Triceps</ThemedText>
-          </View>
-          <View style={styles.statDetails}>
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-            <ProgressBarTheming />
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-          </View>
+      </View>
+      <View style={styles.statItem}>
+        <View style={styles.statName}>
+        <IconSymbol name="back" size={24} color={theme['color-primary-500']} />
+        <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Back</ThemedText>
         </View>
-        <View style={styles.statItem}>
-          <View style={styles.statName}>
-            <IconSymbol name="legs" size={24} color={theme['color-primary-100']} />
-            <ThemedText style={styles.statText}>Legs</ThemedText>
-          </View>
-          <View style={styles.statDetails}>
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-            <ProgressBarTheming />
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-          </View>
+        <View style={styles.statDetails}>
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
+        <ProgressBarStat />
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
         </View>
-        <View style={styles.statItem}>
-          <View style={styles.statName}>
-            <IconSymbol name="shoulders" size={24} color={theme['color-primary-100']} />
-            <ThemedText style={styles.statText}>Shoulders</ThemedText>
-          </View>
-          <View style={styles.statDetails}>
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-            <ProgressBarTheming />
-            <ThemedText style={styles.statValue}>RANK</ThemedText>
-          </View>
+      </View>
+      <View style={styles.statItem}>
+        <View style={styles.statName}>
+        <IconSymbol name="biceps" size={24} color={theme['color-primary-500']} />
+        <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Biceps</ThemedText>
         </View>
-        <View style={styles.overallCard}>
-          <ThemedText style={styles.cardTitle}>Overview</ThemedText>
-          <View style={styles.overallContent}>
-            <ThemedText style={styles.overallText}>RANK</ThemedText>
-            <ProgressBarTheming />
-            <ThemedText style={styles.overallText}>RANK</ThemedText>
-          </View>
+        <View style={styles.statDetails}>
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
+        <ProgressBarStat />
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
         </View>
+      </View>
+      <View style={styles.statItem}>
+        <View style={styles.statName}>
+        <IconSymbol name="triceps" size={24} color={theme['color-primary-500']} />
+        <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Triceps</ThemedText>
+        </View>
+        <View style={styles.statDetails}>
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
+        <ProgressBarStat />
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
+        </View>
+      </View>
+      <View style={styles.statItem}>
+        <View style={styles.statName}>
+        <IconSymbol name="legs" size={24} color={theme['color-primary-500']} />
+        <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Legs</ThemedText>
+        </View>
+        <View style={styles.statDetails}>
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
+        <ProgressBarStat />
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
+        </View>
+      </View>
+      <View style={styles.statItem}>
+        <View style={styles.statName}>
+        <IconSymbol name="shoulders" size={24} color={theme['color-primary-500']} />
+        <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Shoulders</ThemedText>
+        </View>
+        <View style={styles.statDetails}>
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
+        <ProgressBarStat />
+        <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
+        </View>
+      </View>
       </ThemedView>
     </ThemedView>
   );
@@ -114,6 +119,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
+    padding: 16,
     fontWeight: 'bold',
     color: customTheme['color-primary-100'],
   },
@@ -148,7 +154,8 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     width: 100, // Adjust the width as needed
-    marginHorizontal: 8,
+    marginHorizontal: 20,
+    color: customTheme['color-primary-500'],
   },
   overallCard: {
     marginTop: 16,
