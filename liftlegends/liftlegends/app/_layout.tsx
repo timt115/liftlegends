@@ -3,7 +3,8 @@ import * as eva from '@eva-design/eva';
 import { ApplicationProvider, IconRegistry, Layout, Text, useTheme } from '@ui-kitten/components';
 import { Link, Slot } from 'expo-router';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
-import { myTheme as theme } from './custom-theme'; // <-- Import app theme
+import { myTheme as theme } from './custom-theme'; 
+import { SessionProvider } from '@/hooks/ctx';
 
 
 const HomeScreen = () => {
@@ -23,9 +24,11 @@ export default () => (
   <>
     <IconRegistry icons={EvaIconsPack} />
     <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
-      <Layout style={{ flex: 1, backgroundColor: theme['color-primary-500'] }}>
-        <Slot />
-      </Layout>
+      <SessionProvider>
+        <Layout style={{ flex: 1, backgroundColor: theme['color-primary-500'] }}>
+          <Slot />
+        </Layout>
+      </SessionProvider>
     </ApplicationProvider>
   </>
 );
