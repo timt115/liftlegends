@@ -36,9 +36,11 @@ export default function TabLayout() {
           Player
           Level
           Rank
+          <Button title="Sign Out" onPress={signOut} style={styles.signout} />
         </ThemedText>
+        
       </View>
-      <Button title="Sign Out" onPress={signOut} />
+      
       <Tabs
         screenOptions={{
           headerShown: false,
@@ -85,16 +87,22 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     alignItems: 'center',
-    backgroundColor: customTheme['color-primary-1000'], // Use the custom theme color
+    backgroundColor: customTheme['color-primary-900'], // Use the custom theme color
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: customTheme['color-primary-0'], // Use the custom theme color
-    alignSelf: 'flex-start',
+    color: customTheme['color-primary-100'], // Use the custom theme color
     marginLeft: 20,
   },
   avatar: {
     marginRight: 10,
+  },
+  signout: {
+    backgroundColor: customTheme['color-primary-500'], // Use the custom theme colorz 
+    borderRadius: 5,
+    marginRight: 20,
   },
 });
