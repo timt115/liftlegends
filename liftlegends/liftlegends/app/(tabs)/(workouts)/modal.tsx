@@ -1,10 +1,24 @@
 import { Link } from 'expo-router';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, Button } from 'react-native';
 import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
-import React from 'react';
-import { IndexPath, Layout, Select, SelectGroup, SelectItem } from '@ui-kitten/components';
+import React, { useState } from 'react';
+import { IndexPath, Layout, Select, SelectItem } from '@ui-kitten/components';
 
 export default function Modal() {
+  const [workouts, setWorkouts] = useState([{ id: 1, sets: [{ id: 1 }] }]);
+
+  const addWorkout = () => {
+    setWorkouts([...workouts, { id: workouts.length + 1, sets: [{ id: 1 }] }]);
+  };
+
+  const addSet = (workoutId) => {
+    setWorkouts(workouts.map(workout => 
+      workout.id === workoutId 
+        ? { ...workout, sets: [...workout.sets, { id: workout.sets.length + 1 }] }
+        : workout
+    ));
+  };
+
   return (
     <Animated.View
       entering={FadeIn}
@@ -36,31 +50,31 @@ export default function Modal() {
           <Text>← Go back</Text>
         </Link>
         <Text style={{ fontWeight: 'bold', marginTop: 20 }}>Workout Log</Text>
-        <View style={{ flexDirection: 'row' }}>  
-          <TextInput
-            placeholder="Enter workout details"
-            style={{
-              height: 40,
-              borderColor: 'gray',
-              borderWidth: 1,
-              width: '60%',
-              marginTop: 10,
-              paddingLeft: 10,
-            }}
-          />
-          <SelectDisplayValueShowcase />
-        </View>
-        
+        {workouts.map((workout) => (
+          <View key={workout.id} style={{ marginBottom: 20 }}>
+            <Text style={{ fontWeight: 'bold' }}>Workout {workout.id}</Text>
+            {workout.sets.map((set) => (
+              <View key={set.id} style={{ flexDirection: 'row', marginBottom: 10 }}>
+                <SelectDisplayValueShowcase />
+                <TextInput
+                  placeholder="Weight"
+                  style={styles.input}
+                />
+                <TextInput
+                  placeholder="Reps"
+                  style={styles.input}
+                />
+              </View>
+            ))}
+            <Button title="Add Set" onPress={() => addSet(workout.id)} />
+          </View>
+        ))}
+        <Button title="Add Workout" onPress={addWorkout} />
         <Pressable
-          style={{
-            marginTop: 20,
-            padding: 10,
-            backgroundColor: '#2196F3',
-            borderRadius: 5,
-          }}
           onPress={() => {
             // Handle save workout log
           }}
+          style={styles.saveButton}
         >
           <Text style={{ color: 'white' }}>Save Workout</Text>
         </Pressable>
@@ -79,34 +93,16 @@ const data = [
   'Cable Curls',
 ];
 
-
-
 export const SelectDisplayValueShowcase = (): React.ReactElement => {
-
   const [selectedIndex, setSelectedIndex] = React.useState<IndexPath>(new IndexPath(0));
-  const [multiSelectedIndex, setMultiSelectedIndex] = React.useState<IndexPath[]>([
-    new IndexPath(0, 0),
-    new IndexPath(1, 1),
-  ]);
-
   const displayValue = data[selectedIndex.row];
- 
 
   const renderOption = (title): React.ReactElement => (
     <SelectItem title={title} />
   );
 
-  const renderGroup = (title): React.ReactElement => (
-    <SelectGroup title={title}>
-      {groupedData[title].map(renderOption)}
-    </SelectGroup>
-  );
-
   return (
-    <Layout
-      style={styles.container}
-      level='1'
-    >
+    <Layout style={styles.container} level='1'>
       <Select
         style={styles.select}
         placeholder='Default'
@@ -122,10 +118,24 @@ export const SelectDisplayValueShowcase = (): React.ReactElement => {
 
 const styles = StyleSheet.create({
   container: {
+    marginBottom: 10,
   },
   select: {
-    
+    flex: 1,
+    marginRight: 10,
   },
-  
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 8,
+    marginRight: 10,
+  },
+  saveButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: 'blue',
+    borderRadius: 5,
+  },
 });
-
