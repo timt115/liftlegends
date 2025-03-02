@@ -1,17 +1,19 @@
 import { Link } from 'expo-router';
-import { Pressable, StyleSheet, Text, TextInput, View, Button } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
 import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
 import React, { useState } from 'react';
-import { IndexPath, Layout, Select, SelectItem } from '@ui-kitten/components';
+import { useTheme } from '@ui-kitten/components';
+import DropdownComponent from '../../../components/DropdownComponent'; // Import the DropdownComponent
 
 export default function Modal() {
-  const [workouts, setWorkouts] = useState([{ id: 1, sets: [{ id: 1 }] }]);
+  const theme = useTheme();
+  const [workouts, setWorkouts] = useState([{ id: 1, sets: [{ id: 1 }], isFocus: false, value: '' }]);
 
   const addWorkout = () => {
-    setWorkouts([...workouts, { id: workouts.length + 1, sets: [{ id: 1 }] }]);
+    setWorkouts([...workouts, { id: workouts.length + 1, sets: [{ id: 1 }], isFocus: false, value: '' }]);
   };
 
-  const addSet = (workoutId) => {
+  const addSet = (workoutId: number) => {
     setWorkouts(workouts.map(workout => 
       workout.id === workoutId 
         ? { ...workout, sets: [...workout.sets, { id: workout.sets.length + 1 }] }
@@ -22,12 +24,7 @@ export default function Modal() {
   return (
     <Animated.View
       entering={FadeIn}
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#00000040',
-      }}
+      style={styles.overlay}
     >
       {/* Dismiss modal when pressing outside */}
       <Link href={'/'} asChild>
@@ -35,99 +32,118 @@ export default function Modal() {
       </Link>
       <Animated.View
         entering={SlideInDown}
-        style={{
-          width: '90%',
-          height: '80%',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: 'white',
-        }}
+        style={[styles.modal, { backgroundColor: theme['background-basic-color-1'] }]}
       >
-        <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>Modal Screen</Text>
-        <TextInput>
-        </TextInput>
-        <Link href="workout">
-          <Text>← Go back</Text>
-        </Link>
-        <Text style={{ fontWeight: 'bold', marginTop: 20 }}>Workout Log</Text>
-        {workouts.map((workout) => (
-          <View key={workout.id} style={{ marginBottom: 20 }}>
-            <Text style={{ fontWeight: 'bold' }}>Workout {workout.id}</Text>
-            {workout.sets.map((set) => (
-              <View key={set.id} style={{ flexDirection: 'row', marginBottom: 10 }}>
-                <SelectDisplayValueShowcase />
-                <TextInput
-                  placeholder="Weight"
-                  style={styles.input}
-                />
-                <TextInput
-                  placeholder="Reps"
-                  style={styles.input}
-                />
-              </View>
-            ))}
-            <Button title="Add Set" onPress={() => addSet(workout.id)} />
-          </View>
-        ))}
-        <Button title="Add Workout" onPress={addWorkout} />
-        <Pressable
-          onPress={() => {
-            // Handle save workout log
-          }}
-          style={styles.saveButton}
-        >
-          <Text style={{ color: 'white' }}>Save Workout</Text>
-        </Pressable>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <Link href="/workout">
+            <Text style={[styles.goBack, { color: theme['color-primary-500'] }]}>← Go back</Text>
+          </Link>
+          <Text style={[styles.header, { color: theme['text-basic-color'] }]}>Today's Workout Log</Text>
+          
+          {workouts.map((workout) => (
+            <View key={workout.id} style={styles.workoutContainer}>
+              <Text style={[styles.workoutTitle, { color: theme['text-basic-color'] }]}>Workout {workout.id}</Text>
+              <DropdownComponent
+              
+                value={workout.value}
+                setValue={(value: any) => {
+                  const updatedWorkouts = workouts.map(w => 
+                    w.id === workout.id ? { ...w, value } : w
+                  );
+                  setWorkouts(updatedWorkouts);
+                }}
+                isFocus={workout.isFocus}
+                setIsFocus={(isFocus: any) => {
+                  const updatedWorkouts = workouts.map(w => 
+                    w.id === workout.id ? { ...w, isFocus } : w
+                  );
+                  setWorkouts(updatedWorkouts);
+                }}
+              />
+              {workout.sets.map((set) => (
+                <View key={set.id} style={[styles.setContainer, { backgroundColor: theme['background-basic-color-2'] }]}>
+                  <TextInput
+                    placeholder="Weight"
+                    placeholderTextColor={theme['text-hint-color']}
+                    style={[styles.input, { borderColor: theme['border-basic-color-100'], color: theme['text-basic-color'] }]}
+                  />
+                  <TextInput
+                    placeholder="Reps"
+                    placeholderTextColor={theme['text-hint-color']}
+                    style={[styles.input, { borderColor: theme['border-basic-color-100'], color: theme['text-basic-color'] }]}
+                  />
+                </View>
+              ))}
+              <Button title="Add Set" onPress={() => addSet(workout.id)} color={theme['color-primary-500']} />
+            </View>
+          ))}
+          <Button title="Add Workout" onPress={addWorkout} color={theme['color-primary-500']} />
+          <Pressable
+            onPress={() => {
+              // Handle save workout log
+            }}
+            style={[styles.saveButton, { backgroundColor: theme['color-primary-500'] }]}
+          >
+            <Text style={styles.saveButtonText}>Save Workout</Text>
+          </Pressable>
+        </ScrollView>
       </Animated.View>
     </Animated.View>
   );
 }
 
-const data = [
-  'Dumbell Bicep Curls',
-  'Dumbell Hammer Curls',
-  'Preacher Curls',
-  'Barbell Curls',
-  'Concentration Curls',
-  'EZ Bar Curls',
-  'Cable Curls',
-];
-
-export const SelectDisplayValueShowcase = (): React.ReactElement => {
-  const [selectedIndex, setSelectedIndex] = React.useState<IndexPath>(new IndexPath(0));
-  const displayValue = data[selectedIndex.row];
-
-  const renderOption = (title): React.ReactElement => (
-    <SelectItem title={title} />
-  );
-
-  return (
-    <Layout style={styles.container} level='1'>
-      <Select
-        style={styles.select}
-        placeholder='Default'
-        value={displayValue}
-        selectedIndex={selectedIndex}
-        onSelect={(index: IndexPath) => setSelectedIndex(index)}
-      >
-        {data.map(renderOption)}
-      </Select>
-    </Layout>
-  );
-};
-
 const styles = StyleSheet.create({
-  container: {
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#00000040',
+  },
+  modal: {
+    width: '90%',
+    height: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    padding: 20,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  goBack: {
+    alignSelf: 'flex-start',
     marginBottom: 10,
   },
-  select: {
-    flex: 1,
-    marginRight: 10,
+  header: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  subHeader: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  workoutContainer: {
+    marginBottom: 20,
+    width: '100%',
+  },
+  workoutTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  setContainer: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    padding: 10,
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
     padding: 8,
     marginRight: 10,
@@ -135,7 +151,10 @@ const styles = StyleSheet.create({
   saveButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: 'blue',
     borderRadius: 5,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
