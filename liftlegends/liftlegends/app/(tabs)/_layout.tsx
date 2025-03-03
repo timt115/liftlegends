@@ -1,20 +1,49 @@
 import React from 'react';
-import { Platform, StyleSheet, View, Text, Button } from 'react-native';
+import { Platform, StyleSheet, View, Button } from 'react-native';
+import { Text, Avatar, Icon, MenuItem, OverflowMenu, Layout } from '@ui-kitten/components';
 import { Tabs, Redirect } from 'expo-router';
-import { Avatar } from '@ui-kitten/components';
-
-import { HapticTab } from '@/components/HapticTab'; // Import Header component
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { ThemedText } from '@/components/ThemedText';
-import { myTheme as customTheme } from '../custom-theme'; // <-- Import app theme
-import { useSession } from '@/hooks/ctx'; // Adjust the import path as needed
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { myTheme as customTheme } from '../custom-theme';
+import { useSession } from '@/hooks/ctx';
 
-export const AvatarSimpleUsageShowcase = (): React.ReactElement => (
+const UserAvatar = (): React.ReactElement => (
   <Avatar source={require('@/assets/images/icon.png')} size='tiny' style={styles.avatar} />
 );
+
+const CustomOverflowMenu = ({ onSignOut }): React.ReactElement => {
+  const [selectedIndex, setSelectedIndex] = React.useState(null);
+  const [visible, setVisible] = React.useState(false);
+
+  const handleItemSelect = (index): void => {
+    setSelectedIndex(index);
+    setVisible(false);
+  };
+
+  const renderToggleButton = (): React.ReactElement => (
+    <Button onPress={() => setVisible(true)}>
+      MENU
+    </Button>
+  );
+
+  return (
+    <Layout style={styles.menuContainer} level='1'>
+      <OverflowMenu
+        anchor={renderToggleButton} 
+        visible={visible}
+        selectedIndex={selectedIndex}
+        onSelect={handleItemSelect}
+        onBackdropPress={() => setVisible(false)} 
+      >
+        <MenuItem title='Users' />
+        <MenuItem title='Orders' />
+        <MenuItem title='Settings' />
+        <MenuItem title='Sign Out' onPress={onSignOut} />
+      </OverflowMenu>
+    </Layout>
+  );
+};
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,14 +60,13 @@ export default function TabLayout() {
   return (
     <View style={[styles.container, { backgroundColor: customTheme['color-primary-100'] }]}>
       <View style={styles.headerContainer}>
-        <ThemedText type="title" style={styles.title}>
-          <AvatarSimpleUsageShowcase />
-          Player
-          Level
-          Rank
-          <Button title="Sign Out" onPress={signOut} style={styles.signout} />
-        </ThemedText>
-        
+        <View style={styles.headerLeft}>
+          <ThemedText type="title" style={styles.title}>
+            <UserAvatar />
+            Player Level Rank
+          </ThemedText>
+        </View>
+        <CustomOverflowMenu onSignOut={signOut} />
       </View>
       
       <Tabs
@@ -46,12 +74,13 @@ export default function TabLayout() {
           headerShown: false,
           tabBarStyle: Platform.select({
             ios: {
-              // Use a transparent background on iOS to show the blur effect
               position: 'absolute',
+              backgroundColor: 'transparent',
             },
             default: {},
           }),
-        }}>
+        }}
+      >
         <Tabs.Screen
           name="stats"
           options={{
@@ -87,22 +116,25 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     alignItems: 'center',
-    backgroundColor: customTheme['color-primary-900'], // Use the custom theme color
+    backgroundColor: customTheme['color-primary-900'],
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: customTheme['color-primary-100'], // Use the custom theme color
+    color: customTheme['color-primary-100'],
     marginLeft: 20,
   },
   avatar: {
     marginRight: 10,
   },
-  signout: {
-    backgroundColor: customTheme['color-primary-500'], // Use the custom theme colorz 
-    borderRadius: 5,
-    marginRight: 20,
+  menuContainer: {
+    width: '10%',
+    height: '50%',
+
+  },
+  headerLeft: {
+    flex: 1,
   },
 });

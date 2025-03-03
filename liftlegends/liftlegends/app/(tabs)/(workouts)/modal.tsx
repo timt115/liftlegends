@@ -26,10 +26,6 @@ export default function Modal() {
       entering={FadeIn}
       style={styles.overlay}
     >
-      {/* Dismiss modal when pressing outside */}
-      <Link href={'/'} asChild>
-        <Pressable style={StyleSheet.absoluteFill} />
-      </Link>
       <Animated.View
         entering={SlideInDown}
         style={[styles.modal, { backgroundColor: theme['background-basic-color-1'] }]}

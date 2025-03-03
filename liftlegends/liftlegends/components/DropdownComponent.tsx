@@ -48,6 +48,7 @@ const DropdownComponent: React.FC<DropdownComponentProps> = ({ value, setValue, 
         iconStyle={styles.iconStyle}
         containerStyle={{ backgroundColor: theme['background-basic-color-3'], borderColor: theme['border-basic-color-1'] }}
         data={data}
+        search
         itemTextStyle={{ color: theme['text-basic-color'] }}
         maxHeight={300}
         labelField="label" 

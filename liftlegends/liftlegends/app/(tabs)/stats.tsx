@@ -34,72 +34,19 @@ export default function StatsTab() {
         <View style={{ height: 30 }} />
         <ThemedView style={[styles.statContainer, { backgroundColor: theme['color-primary-400'] }]}>
           <ThemedText style={[styles.cardTitle, { color: theme['color-basic-100'] }]}>Muscle Groups</ThemedText>
-          <View style={styles.statItem}>
-            <View style={styles.statName}>
-              <IconSymbol name="chest" size={24} color={theme['color-primary-400']} />
-              <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Chest</ThemedText>
+          {['Chest', 'Back', 'Biceps', 'Triceps', 'Legs', 'Shoulders'].map((muscleGroup, index) => (
+            <View key={index} style={styles.statItem}>
+              <View style={styles.statName}>
+                <IconSymbol name={muscleGroup.toLowerCase()} size={24} color={theme['color-basic-100']} />
+                <ThemedText style={[styles.statText, { color: theme['color-basic-100'] }]}>{muscleGroup}</ThemedText>
+              </View>
+              <View style={styles.statDetails}>
+                <ThemedText style={[styles.statValue, { color: theme['color-basic-100'] }]}>RANK</ThemedText>
+                <ProgressBarStat />
+                <ThemedText style={[styles.statValue, { color: theme['color-basic-100'] }]}>RANK</ThemedText>
+              </View>
             </View>
-            <View style={styles.statDetails}>
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-              <ProgressBarStat />
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-            </View>
-          </View>
-          <View style={styles.statItem}>
-            <View style={styles.statName}>
-              <IconSymbol name="back" size={24} color={theme['color-primary-400']} />
-              <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Back</ThemedText>
-            </View>
-            <View style={styles.statDetails}>
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-              <ProgressBarStat />
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-            </View>
-          </View>
-          <View style={styles.statItem}>
-            <View style={styles.statName}>
-              <IconSymbol name="biceps" size={24} color={theme['color-primary-400']} />
-              <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Biceps</ThemedText>
-            </View>
-            <View style={styles.statDetails}>
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-              <ProgressBarStat />
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-            </View>
-          </View>
-          <View style={styles.statItem}>
-            <View style={styles.statName}>
-              <IconSymbol name="triceps" size={24} color={theme['color-primary-400']} />
-              <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Triceps</ThemedText>
-            </View>
-            <View style={styles.statDetails}>
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-              <ProgressBarStat />
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-            </View>
-          </View>
-          <View style={styles.statItem}>
-            <View style={styles.statName}>
-              <IconSymbol name="legs" size={24} color={theme['color-primary-400']} />
-              <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Legs</ThemedText>
-            </View>
-            <View style={styles.statDetails}>
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-              <ProgressBarStat />
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-            </View>
-          </View>
-          <View style={styles.statItem}>
-            <View style={styles.statName}>
-              <IconSymbol name="shoulders" size={24} color={theme['color-primary-400']} />
-              <ThemedText style={[styles.statText, { color: theme['color-primary-700'] }]}>Shoulders</ThemedText>
-            </View>
-            <View style={styles.statDetails}>
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-              <ProgressBarStat />
-              <ThemedText style={[styles.statValue, { color: theme['color-primary-700'] }]}>RANK</ThemedText>
-            </View>
-          </View>
+          ))}
         </ThemedView>
       </ThemedView>
     </ScrollView>
@@ -109,33 +56,52 @@ export default function StatsTab() {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
+    padding: 16,
   },
   container: {
     flex: 1,
+    padding: 16,
+    borderRadius: 8,
   },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
+    padding: 16,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   title: {
     fontSize: 30,
-    padding: 16,
     fontWeight: 'bold',
-    color: customTheme['color-primary-100'],
   },
   statContainer: {
     padding: 16,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   statItem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 16,
-    padding: 8,
+    padding: 16,
     backgroundColor: customTheme['color-primary-100'],
     borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   statName: {
     flexDirection: 'row',
@@ -148,26 +114,26 @@ const styles = StyleSheet.create({
   statText: {
     fontSize: 18,
     marginLeft: 8,
-    color: customTheme['color-primary-500'],
   },
   statValue: {
     fontSize: 18,
-    color: customTheme['color-primary-500'],
   },
   progressBar: {
     width: 100, // Adjust the width as needed
     marginHorizontal: 20,
-    color: customTheme['color-primary-900'],
   },
   overallCard: {
     marginTop: 16,
     padding: 16,
-    backgroundColor: customTheme['color-primary-100'],
     borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   cardTitle: {
     fontSize: 18,
-    color: customTheme['color-primary-500'],
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -178,6 +144,5 @@ const styles = StyleSheet.create({
   },
   overallText: {
     fontSize: 18,
-    color: customTheme['color-primary-500'],
   },
 });
