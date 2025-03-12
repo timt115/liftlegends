@@ -1,35 +1,43 @@
-import { Text, View, StyleSheet, } from 'react-native';
+import React from 'react';
+import { Text, StyleSheet, Pressable, Image } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
-import { Link, Stack } from 'expo-router';
-import { LearnMoreLinks } from 'react-native/Libraries/NewAppScreen';
-
+import { useRouter } from 'expo-router';
 
 export default function Index() {
+  const router = useRouter();
+
   return (
-    <ThemedView style={styles.container}>
-      <Text style={styles.title}>Welcome</Text>
-      <Text>To</Text>
-      <Text style={styles.title}>Lift Legends</Text>
-      <Text>  </Text>
-      <Link href="/(tabs)/profile">Go to Tabs</Link>
-    </ThemedView>
+    <Pressable style={styles.container} onPress={() => router.push('/(tabs)/profile')}>
+      <ThemedView style={styles.container}>
+        <Image source={require('@/assets/images/startscreen.jpeg')} style={styles.image} />
+        <Text style={styles.title}>Welcome</Text>
+        <Text>To</Text>
+        <Text style={styles.title}>Lift Legends</Text>
+        <Text>  </Text>
+        <Text style={styles.start}>TAP anywhere to START</Text>
+      </ThemedView>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: '100%',
+    width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start', // Align items to the top
+  },
+  image: {
+    width: '100%', // Set the width to the full width of the screen
+    resizeMode: 'contain', // Ensure the image maintains its aspect ratio
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginBottom: 10, // Add margin to create space between elements
   },
-  button: {
-    padding: 5,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    color: 'black',
+  start: {
+    fontSize: 16,
   },
 });

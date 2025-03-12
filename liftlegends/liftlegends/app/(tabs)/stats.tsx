@@ -1,11 +1,19 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, Image } from 'react-native';
 import { useTheme, ProgressBar } from '@ui-kitten/components';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useProgress } from '@/hooks/useProgress';
 import { myTheme as customTheme } from '../custom-theme'; // <-- Import app theme
+
+// Import images
+const rankImages = {
+  rank1: require('@/assets/images/bronze.png'),
+  rank2: require('@/assets/images/silver.png'),
+  rank3: require('@/assets/images/gold.png'),
+  rank4: require('@/assets/images/plat.png'),
+  rank5: require('@/assets/images/diamond.png'),
+};
 
 export const ProgressBarStat = (): React.ReactElement => {
   const progress = useProgress();
@@ -26,9 +34,9 @@ export default function StatsTab() {
         <ThemedView style={[styles.overallCard, { backgroundColor: theme['color-primary-400'] }]}>
           <ThemedText style={[styles.cardTitle, { color: theme['color-basic-100'] }]}>Overview</ThemedText>
           <View style={styles.overallContent}>
-            <ThemedText style={[styles.overallText, { color: theme['color-basic-100'] }]}>RANK</ThemedText>
+            <Image source={rankImages.rank1} style={styles.rankImage} />
             <ProgressBarStat />
-            <ThemedText style={[styles.overallText, { color: theme['color-basic-100'] }]}>RANK</ThemedText>
+            <Image source={rankImages.rank2} style={styles.rankImage} />
           </View>
         </ThemedView>
         <View style={{ height: 30 }} />
@@ -37,13 +45,13 @@ export default function StatsTab() {
           {['Chest', 'Back', 'Biceps', 'Triceps', 'Legs', 'Shoulders'].map((muscleGroup, index) => (
             <View key={index} style={styles.statItem}>
               <View style={styles.statName}>
-                <IconSymbol name={muscleGroup.toLowerCase()} size={24} color={theme['color-basic-100']} />
+                <Image source={rankImages[`rank${index + 1}`]} style={styles.rankImage} />
                 <ThemedText style={[styles.statText, { color: theme['color-basic-100'] }]}>{muscleGroup}</ThemedText>
               </View>
               <View style={styles.statDetails}>
-                <ThemedText style={[styles.statValue, { color: theme['color-basic-100'] }]}>RANK</ThemedText>
+                <Image source={rankImages[`rank${index + 1}`]} style={styles.rankstatImage} />
                 <ProgressBarStat />
-                <ThemedText style={[styles.statValue, { color: theme['color-basic-100'] }]}>RANK</ThemedText>
+                <Image source={rankImages[`rank${index + 2}`]} style={styles.rankstatImage} />
               </View>
             </View>
           ))}
@@ -56,19 +64,19 @@ export default function StatsTab() {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    padding: 16,
+    padding: '4%',
   },
   container: {
     flex: 1,
-    padding: 16,
+    padding: '4%',
     borderRadius: 8,
   },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
-    padding: 16,
+    marginBottom: '4%',
+    padding: '4%',
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -81,7 +89,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   statContainer: {
-    padding: 16,
+    padding: '4%',
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -93,8 +101,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
-    padding: 16,
+    marginBottom: '4%',
+    padding: '4%',
     backgroundColor: customTheme['color-primary-100'],
     borderRadius: 8,
     shadowColor: '#000',
@@ -106,25 +114,33 @@ const styles = StyleSheet.create({
   statName: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   statDetails: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    flex: 1,
+  },
+  rankstatImage: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
   },
   statText: {
     fontSize: 18,
-    marginLeft: 8,
+    marginLeft: '2%',
   },
   statValue: {
     fontSize: 18,
   },
   progressBar: {
-    width: 100, // Adjust the width as needed
-    marginHorizontal: 20,
+    width: '40%', // Adjust the width as needed
+    marginHorizontal: '5%',
   },
   overallCard: {
-    marginTop: 16,
-    padding: 16,
+    marginTop: '4%',
+    padding: '4%',
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -134,7 +150,7 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 18,
-    marginBottom: 8,
+    marginBottom: '2%',
     textAlign: 'center',
   },
   overallContent: {
@@ -144,5 +160,10 @@ const styles = StyleSheet.create({
   },
   overallText: {
     fontSize: 18,
+  },
+  rankImage: {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain',
   },
 });

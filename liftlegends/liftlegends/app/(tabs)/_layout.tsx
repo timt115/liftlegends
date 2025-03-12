@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform, StyleSheet, View, Button } from 'react-native';
-import { Text, Avatar, Icon, MenuItem, OverflowMenu, Layout } from '@ui-kitten/components';
+import { Text, Avatar, MenuItem, OverflowMenu, Layout } from '@ui-kitten/components';
 import { Tabs, Redirect } from 'expo-router';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { ThemedText } from '@/components/ThemedText';
@@ -22,19 +22,17 @@ const CustomOverflowMenu = ({ onSignOut }): React.ReactElement => {
   };
 
   const renderToggleButton = (): React.ReactElement => (
-    <Button onPress={() => setVisible(true)}>
-      MENU
-    </Button>
+    <Button title="Menu" onPress={() => setVisible(true)} />
   );
 
   return (
     <Layout style={styles.menuContainer} level='1'>
       <OverflowMenu
-        anchor={renderToggleButton} 
+        anchor={renderToggleButton}
         visible={visible}
         selectedIndex={selectedIndex}
         onSelect={handleItemSelect}
-        onBackdropPress={() => setVisible(false)} 
+        onBackdropPress={() => setVisible(false)}
       >
         <MenuItem title='Users' />
         <MenuItem title='Orders' />
@@ -113,26 +111,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: '1%',
+    paddingBottom: '1%',
     alignItems: 'center',
     backgroundColor: customTheme['color-primary-900'],
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   title: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: 'bold',
     color: customTheme['color-primary-100'],
-    marginLeft: 20,
+    marginLeft: '2%',
   },
   avatar: {
-    marginRight: 10,
+    marginLeft: '1%',
+    paddingRight: '5%',
   },
   menuContainer: {
-    width: '10%',
-    height: '50%',
-
+    width: '15%',
+    height: '100%',
   },
   headerLeft: {
     flex: 1,

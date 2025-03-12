@@ -49,12 +49,12 @@ export default function ProfileTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: '4%',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: '4%',
   },
   title: {
     fontSize: 30,
@@ -64,32 +64,32 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: customTheme['color-primary-100'],
-    marginBottom: 16,
+    marginBottom: '4%',
     textAlign: 'center',
   },
   statContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-    padding: 8,
+    marginBottom: '4%',
+    padding: '4%',
     backgroundColor: customTheme['color-primary-100'],
     borderRadius: 8,
   },
   statText: {
     fontSize: 18,
-    marginLeft: 8,
+    marginLeft: '2%',
     color: customTheme['color-primary-500'],
   },
   levelCard: {
-    marginBottom: 16,
-    padding: 16,
+    marginBottom: '4%',
+    padding: '4%',
     backgroundColor: customTheme['color-primary-100'],
     borderRadius: 8,
   },
   cardTitle: {
     fontSize: 18,
     color: customTheme['color-primary-500'],
-    marginBottom: 8,
+    marginBottom: '2%',
     textAlign: 'center',
   },
   levelContent: {
@@ -103,12 +103,12 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     flex: 1,
-    marginHorizontal: 8,
+    marginHorizontal: '2%',
   },
   comingSoon: {
     fontSize: 16,
     color: customTheme['color-primary-100'],
     textAlign: 'center',
-    marginTop: 32,
+    marginTop: '8%',
   },
 });
