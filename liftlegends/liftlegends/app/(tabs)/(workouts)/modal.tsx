@@ -1,131 +1,131 @@
-import { Link } from 'expo-router';
-import { Pressable, StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
-import Animated, { FadeIn, SlideInDown } from 'react-native-reanimated';
 import React, { useState } from 'react';
-import { useTheme } from '@ui-kitten/components';
-import DropdownComponent from '../../../components/DropdownComponent'; // Import the DropdownComponent
+import { StyleSheet, Text, TextInput, View, Button, Alert } from 'react-native';
+import { supabase } from '../../../utils/supabase'; // Adjust the relative path if needed
+import { v4 as uuidv4 } from 'uuid'; // For generating UUIDs
 
 export default function Modal() {
-  const theme = useTheme();
-  const [workouts, setWorkouts] = useState([{ id: 1, sets: [{ id: 1 }], isFocus: false, value: '' }]);
+  const [workouts, setWorkouts] = useState([
+    { id: uuidv4(), name: 'Workout 1', sets: [{ id: uuidv4(), weight: '', reps: '' }] },
+  ]);
 
-  const addWorkout = () => {
-    setWorkouts([...workouts, { id: workouts.length + 1, sets: [{ id: 1 }], isFocus: false, value: '' }]);
+  // Add a new set to a workout
+  const addSet = (workoutId: string) => {
+    setWorkouts(prevWorkouts =>
+      prevWorkouts.map(workout =>
+        workout.id === workoutId
+          ? { ...workout, sets: [...workout.sets, { id: uuidv4(), weight: '', reps: '' }] }
+          : workout
+      )
+    );
   };
 
-  const addSet = (workoutId: number) => {
-    setWorkouts(workouts.map(workout => 
-      workout.id === workoutId 
-        ? { ...workout, sets: [...workout.sets, { id: workout.sets.length + 1 }] }
-        : workout
-    ));
+  // Update a specific set's field (weight or reps)
+  const updateSet = (workoutId: string, setId: string, field: 'weight' | 'reps', value: string) => {
+    setWorkouts(prevWorkouts =>
+      prevWorkouts.map(workout =>
+        workout.id === workoutId
+          ? {
+              ...workout,
+              sets: workout.sets.map(set =>
+                set.id === setId ? { ...set, [field]: value } : set
+              ),
+            }
+          : workout
+      )
+    );
+  };
+
+  // Save workouts to the database
+  const saveWorkouts = async () => {
+    try {
+      const { data: session, error } = await supabase.auth.getSession();
+      if (error || !session?.session) {
+        Alert.alert('Error', 'You must be logged in to save workouts.');
+        return;
+      }
+  
+      const userId = session.session.user.id;
+  
+      // Insert workouts into the `workouts` table
+      const workoutsToInsert = workouts.map(workout => ({
+        id: workout.id, // UUID for the workout
+        user_id: userId, // Assuming the `workouts` table has a `user_id` column
+        workout_name: workout.name, // Name of the workout
+      }));
+  
+      const { error: workoutInsertError } = await supabase.from('workouts').insert(workoutsToInsert);
+      if (workoutInsertError) throw workoutInsertError;
+  
+      // Insert sets into the `sets` table
+      const setsToInsert = workouts.flatMap(workout =>
+        workout.sets.map(set => ({
+          sid: uuidv4(), // Generate a unique ID for each set
+          id: userId, // User ID
+          workout_id: workout.id, // Workout ID (UUID)
+          weight: set.weight,
+          reps: set.reps,
+        }))
+      );
+  
+      console.log('Sets being sent:', setsToInsert); // Debugging
+  
+      const { error: setsInsertError } = await supabase.from('sets').insert(setsToInsert);
+      if (setsInsertError) throw setsInsertError;
+  
+      Alert.alert('Success', 'Workouts and sets saved successfully!');
+    } catch (error) {
+      console.error('Error in saveWorkouts:', error); // Debugging
+      Alert.alert('Error', `Failed to save workouts: ${error.message}`);
+    }
   };
 
   return (
-    <Animated.View
-      entering={FadeIn}
-      style={styles.overlay}
-    >
-      <Animated.View
-        entering={SlideInDown}
-        style={[styles.modal, { backgroundColor: theme['background-basic-color-1'] }]}
-      >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Link href="/workout">
-            <Text style={[styles.goBack, { color: theme['color-primary-500'] }]}>← Go back</Text>
-          </Link>
-          <Text style={[styles.header, { color: theme['text-basic-color'] }]}>Today's Workout Log</Text>
-          
-          {workouts.map((workout) => (
-            <View key={workout.id} style={styles.workoutContainer}>
-              <Text style={[styles.workoutTitle, { color: theme['text-basic-color'] }]}>Workout {workout.id}</Text>
-              <DropdownComponent
-              
-                value={workout.value}
-                setValue={(value: any) => {
-                  const updatedWorkouts = workouts.map(w => 
-                    w.id === workout.id ? { ...w, value } : w
-                  );
-                  setWorkouts(updatedWorkouts);
-                }}
-                isFocus={workout.isFocus}
-                setIsFocus={(isFocus: any) => {
-                  const updatedWorkouts = workouts.map(w => 
-                    w.id === workout.id ? { ...w, isFocus } : w
-                  );
-                  setWorkouts(updatedWorkouts);
-                }}
+    <View style={styles.container}>
+      {workouts.map(workout => (
+        <View key={workout.id} style={styles.workoutContainer}>
+          <TextInput
+            placeholder="Workout Name"
+            style={styles.input}
+            value={workout.name}
+            onChangeText={text =>
+              setWorkouts(prevWorkouts =>
+                prevWorkouts.map(w =>
+                  w.id === workout.id ? { ...w, name: text } : w
+                )
+              )
+            }
+          />
+          {workout.sets.map(set => (
+            <View key={set.id} style={styles.setContainer}>
+              <TextInput
+                placeholder="Weight"
+                style={styles.input}
+                value={set.weight}
+                onChangeText={text => updateSet(workout.id, set.id, 'weight', text)}
               />
-              {workout.sets.map((set) => (
-                <View key={set.id} style={[styles.setContainer, { backgroundColor: theme['background-basic-color-2'] }]}>
-                  <TextInput
-                    placeholder="Weight"
-                    placeholderTextColor={theme['text-hint-color']}
-                    style={[styles.input, { borderColor: theme['border-basic-color-100'], color: theme['text-basic-color'] }]}
-                  />
-                  <TextInput
-                    placeholder="Reps"
-                    placeholderTextColor={theme['text-hint-color']}
-                    style={[styles.input, { borderColor: theme['border-basic-color-100'], color: theme['text-basic-color'] }]}
-                  />
-                </View>
-              ))}
-              <Button title="Add Set" onPress={() => addSet(workout.id)} color={theme['color-primary-500']} />
+              <TextInput
+                placeholder="Reps"
+                style={styles.input}
+                value={set.reps}
+                onChangeText={text => updateSet(workout.id, set.id, 'reps', text)}
+              />
             </View>
           ))}
-          <Button title="Add Workout" onPress={addWorkout} color={theme['color-primary-500']} />
-          <Pressable
-            onPress={() => {
-              // Handle save workout log
-            }}
-            style={[styles.saveButton, { backgroundColor: theme['color-primary-500'] }]}
-          >
-            <Text style={styles.saveButtonText}>Save Workout</Text>
-          </Pressable>
-        </ScrollView>
-      </Animated.View>
-    </Animated.View>
+          <Button title="Add Set" onPress={() => addSet(workout.id)} />
+        </View>
+      ))}
+      <Button title="Save Workouts" onPress={saveWorkouts} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
+  container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#00000040',
-  },
-  modal: {
-    width: '90%',
-    height: '80%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
     padding: 20,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  goBack: {
-    alignSelf: 'flex-start',
-    marginBottom: 10,
-  },
-  header: {
-    fontWeight: 'bold',
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  subHeader: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    marginTop: 20,
-    marginBottom: 10,
   },
   workoutContainer: {
     marginBottom: 20,
-    width: '100%',
   },
   workoutTitle: {
     fontWeight: 'bold',
@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
   setContainer: {
     flexDirection: 'row',
     marginBottom: 10,
-    padding: 10,
   },
   input: {
     flex: 1,
@@ -143,14 +142,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 8,
     marginRight: 10,
-  },
-  saveButton: {
-    marginTop: 20,
-    padding: 10,
-    borderRadius: 5,
-  },
-  saveButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
   },
 });

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Platform, StyleSheet, View, Button } from 'react-native';
 import { Text, Avatar, MenuItem, OverflowMenu, Layout } from '@ui-kitten/components';
-import { Tabs, Redirect, useRouter } from 'expo-router';
+import { Tabs, useRouter } from 'expo-router';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { ThemedText } from '@/components/ThemedText';
 import { IconSymbol } from '@/components/ui/IconSymbol';
@@ -11,7 +11,7 @@ import { supabase } from '@/utils/supabase';
 const UserAvatar = (): React.ReactElement => (
   <Avatar source={require('@/assets/images/icon.png')} size='tiny' style={styles.avatar} />
 );
-  
+
 const CustomOverflowMenu = ({ onSignOut }): React.ReactElement => {
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [visible, setVisible] = React.useState(false);

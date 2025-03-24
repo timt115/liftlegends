@@ -4,21 +4,19 @@ import { ApplicationProvider, IconRegistry, Layout, Text, useTheme } from '@ui-k
 import { Link, Slot } from 'expo-router';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { myTheme as theme } from './custom-theme'; 
-import { SessionProvider } from '@/hooks/ctx';
 import { StatusBar, View, StyleSheet } from 'react-native';
 
 export default () => (
+  
   <>
     <IconRegistry icons={EvaIconsPack} />
     <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
-      <SessionProvider>
         <View style={styles.container}>
           <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
           <Layout style={{ flex: 1, backgroundColor: theme['color-primary-500'] }}>
             <Slot />
           </Layout>
         </View>
-      </SessionProvider>
     </ApplicationProvider>
   </>
 );
