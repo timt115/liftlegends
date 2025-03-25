@@ -1,41 +1,44 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, Alert } from 'react-native';
-import { supabase } from '../../../utils/supabase'; // Adjust the relative path if needed
-import { v4 as uuidv4 } from 'uuid'; // For generating UUIDs
+import { StyleSheet, TextInput, View, Button, Alert } from 'react-native';
+import { supabase } from '../../../utils/supabase';
+import { v4 as uuidv4 } from 'uuid'; // Import UUID library for generating unique IDs
 
+
+// Adjust the relative path if needed
 export default function Modal() {
   const [workouts, setWorkouts] = useState([
-    { id: uuidv4(), name: 'Workout 1', sets: [{ id: uuidv4(), weight: '', reps: '' }] },
+    { id: 1, name: 'Workout 1', sets: [{ id: 1, exerise_id: '', weight: '', reps: '' }] },
   ]);
 
-  // Add a new set to a workout
-  const addSet = (workoutId: string) => {
+  // Helper function to update workouts state
+  const updateWorkouts = (workoutId, updater) => {
     setWorkouts(prevWorkouts =>
       prevWorkouts.map(workout =>
-        workout.id === workoutId
-          ? { ...workout, sets: [...workout.sets, { id: uuidv4(), weight: '', reps: '' }] }
-          : workout
+        workout.id === workoutId ? updater(workout) : workout
       )
     );
+  };
+
+  // Add a new set to a workout
+  const addSet = workoutId => {
+    updateWorkouts(workoutId, workout => ({
+      ...workout,
+      sets: [...workout.sets, { id: Date.now(), exerise_id: '', weight: '', reps: '' }],
+    }));
   };
 
   // Update a specific set's field (weight or reps)
-  const updateSet = (workoutId: string, setId: string, field: 'weight' | 'reps', value: string) => {
-    setWorkouts(prevWorkouts =>
-      prevWorkouts.map(workout =>
-        workout.id === workoutId
-          ? {
-              ...workout,
-              sets: workout.sets.map(set =>
-                set.id === setId ? { ...set, [field]: value } : set
-              ),
-            }
-          : workout
-      )
-    );
+  const updateSet = (workoutId, setId, field, value) => {
+    updateWorkouts(workoutId, workout => ({
+      ...workout,
+      sets: workout.sets.map(set =>
+        set.id === setId ? { ...set, [field]: value } : set
+      ),
+    }));
   };
 
   // Save workouts to the database
+
   const saveWorkouts = async () => {
     try {
       const { data: session, error } = await supabase.auth.getSession();
@@ -45,36 +48,36 @@ export default function Modal() {
       }
   
       const userId = session.session.user.id;
+      const workout_id = uuidv4();
   
-      // Insert workouts into the `workouts` table
+      // Generate unique IDs for workouts and prepare data for insertion
       const workoutsToInsert = workouts.map(workout => ({
-        id: workout.id, // UUID for the workout
-        user_id: userId, // Assuming the `workouts` table has a `user_id` column
-        workout_name: workout.name, // Name of the workout
+        workout_id: workout_id, 
+        user_id: userId,
+        workout_name: workout.name,
       }));
   
+      // Insert workouts into the database
       const { error: workoutInsertError } = await supabase.from('workouts').insert(workoutsToInsert);
       if (workoutInsertError) throw workoutInsertError;
   
-      // Insert sets into the `sets` table
+      // Prepare sets to insert with the correct workout IDs
       const setsToInsert = workouts.flatMap(workout =>
-        workout.sets.map(set => ({
-          sid: uuidv4(), // Generate a unique ID for each set
-          id: userId, // User ID
-          workout_id: workout.id, // Workout ID (UUID)
-          weight: set.weight,
-          reps: set.reps,
+        workout.sets.map(({ weight, reps }) => ({
+          user_id: userId,
+          workout_id: workout_id,
+          weight,
+          reps,
         }))
       );
   
-      console.log('Sets being sent:', setsToInsert); // Debugging
-  
+      // Insert sets into the database
       const { error: setsInsertError } = await supabase.from('sets').insert(setsToInsert);
       if (setsInsertError) throw setsInsertError;
   
       Alert.alert('Success', 'Workouts and sets saved successfully!');
     } catch (error) {
-      console.error('Error in saveWorkouts:', error); // Debugging
+      console.error('Error in saveWorkouts:', error);
       Alert.alert('Error', `Failed to save workouts: ${error.message}`);
     }
   };
@@ -88,11 +91,7 @@ export default function Modal() {
             style={styles.input}
             value={workout.name}
             onChangeText={text =>
-              setWorkouts(prevWorkouts =>
-                prevWorkouts.map(w =>
-                  w.id === workout.id ? { ...w, name: text } : w
-                )
-              )
+              updateWorkouts(workout.id, workout => ({ ...workout, name: text }))
             }
           />
           {workout.sets.map(set => (
@@ -126,11 +125,6 @@ const styles = StyleSheet.create({
   },
   workoutContainer: {
     marginBottom: 20,
-  },
-  workoutTitle: {
-    fontWeight: 'bold',
-    fontSize: 18,
-    marginBottom: 10,
   },
   setContainer: {
     flexDirection: 'row',
